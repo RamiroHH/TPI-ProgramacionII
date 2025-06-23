@@ -1,0 +1,10 @@
+modelos\Pivot.class
+modelos\Base.class
+modelos\Temporada.class
+controlador\UsuarioSistema.class
+modelos\Jugador.class
+modelos\AlaPivot.class
+modelos\Escolta.class
+com\mycompany\sistemagestion\SistemaGestion.class
+modelos\Alero.class
+vista\Vista.class
