@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package controlador;
 
 import java.util.ArrayList;
@@ -14,10 +10,7 @@ import modelos.Pivot;
 import modelos.Temporada;
 import vista.Vista;
 
-/**
- *
- * @author lichi
- */
+
 public class UsuarioSistema {
     private ArrayList<Jugador> jugadores = new ArrayList<>();
     private ArrayList<Temporada> temporadas = new ArrayList<>();
@@ -40,7 +33,7 @@ public void registrarJugador() {
             Integer.parseInt(j[9]), 
             Integer.parseInt(j[10]) 
         ));
-        System.out.println("Jugador " + j[6] + " registrado con éxito.");
+        System.out.println("Jugador " + j[1] + " registrado con exito.");
     } else if (j[6].equalsIgnoreCase("Alero")) {
         jugadores.add(new Alero(
             Integer.parseInt(j[0]),
@@ -55,7 +48,7 @@ public void registrarJugador() {
             Integer.parseInt(j[9]),
             Integer.parseInt(j[10]) 
         ));
-        System.out.println("Jugador " + j[6] + " registrado con éxito.");
+        System.out.println("Jugador " + j[1] + " registrado con exito.");
     } else if (j[6].equalsIgnoreCase("Escolta")) {
         jugadores.add(new Escolta(
             Integer.parseInt(j[0]),
@@ -69,7 +62,7 @@ public void registrarJugador() {
             Integer.parseInt(j[8]), 
             Integer.parseInt(j[9])  
         ));
-        System.out.println("Jugador " + j[6] + " registrado con éxito.");
+        System.out.println("Jugador " + j[1] + " registrado con exito.");
     } else if (j[6].equalsIgnoreCase("Ala Pivot")) {
         jugadores.add(new AlaPivot(
             Integer.parseInt(j[0]),
@@ -84,7 +77,7 @@ public void registrarJugador() {
             Integer.parseInt(j[9]), 
             Integer.parseInt(j[10]) 
         ));
-        System.out.println("Jugador " + j[6] + " registrado con éxito.");
+        System.out.println("Jugador " + j[1] + " registrado con exito.");
     } else if (j[6].equalsIgnoreCase("Pivot")) {
         jugadores.add(new Pivot(
             Integer.parseInt(j[0]),
@@ -99,7 +92,7 @@ public void registrarJugador() {
             Integer.parseInt(j[9]), 
             Integer.parseInt(j[10]) 
         ));
-        System.out.println("Jugador " + j[6] + " registrado con éxito.");
+        System.out.println("Jugador " + j[1] + " registrado con exito.");
     } else {
         System.out.println("No se pudo registrar el jugador");
     }
@@ -126,7 +119,7 @@ public void registrarJugador() {
     public void ficharJugadorTemp() {
         String nombreEquipo = vista.pedirNombreEquipoTemporada();
         
-        System.out.println("Fichajes para el equipo: " + nombreEquipo + ":");
+        System.out.println("Fichajes para el equipo " + nombreEquipo + ":");
         
         for(Temporada t : temporadas) {
             if(t.getEquipo().equalsIgnoreCase(nombreEquipo)) {
@@ -140,18 +133,50 @@ public void registrarJugador() {
      }
     
     public void jugadoresRendimiento() {
-        double punt = vista.pedirPuntosDeseados();
-        
-        for (Temporada t: temporadas) {
-            if(t.getPuntosXpartido() >= punt) {
-                for (Jugador j : jugadores) {
-                    if(j.getId() == t.getIdJugador()) {
-                        System.out.println("Jugador: " + j.getNombreCompleto() + "| PUNTOS POR PARTIDO: " + t.getPuntosXpartido());
-                    }
+    double punt = vista.pedirPuntosDeseados();
+    ArrayList<Jugador> filtrados = new ArrayList<>();
+
+    for (Temporada t : temporadas) {
+        if (t.getPuntosXpartido() >= punt) {
+            for (Jugador j : jugadores) {
+                if (j.getId() == t.getIdJugador()) {
+                    filtrados.add(j);
                 }
             }
         }
     }
+
+    if (filtrados.size() == 0) {
+        System.out.println("Sin jugadores que superen ese rendimiento.");
+        return;
+    }
+
+    filtrados.sort((a, b) -> {
+        double pa = 0;
+        double pb = 0;
+
+        for (Temporada t : temporadas) {
+            if (t.getIdJugador() == a.getId()) {
+                pa = t.getPuntosXpartido();
+            }
+            if (t.getIdJugador() == b.getId()) {
+                pb = t.getPuntosXpartido();
+            }
+        }
+
+        return Double.compare(pb, pa);
+    });
+
+    for (Jugador j : filtrados) {
+        double puntos = 0;
+        for (Temporada t : temporadas) {
+            if (t.getIdJugador() == j.getId()) {
+                puntos = t.getPuntosXpartido();
+            }
+        }
+        System.out.println("Jugador: " + j.getNombreCompleto() + " | Puntos por partido: " + puntos);
+    }
+}
     
     public void informeJugadorDetall() {
         int id = vista.pedirIdJug();
@@ -171,34 +196,103 @@ public void registrarJugador() {
     }
     
     public void jugadoresDest() {
-        double punt = vista.pedirPuntosDeseados();
-        
-        for (Temporada t : temporadas) {
-            if (t.getPuntosXpartido() >= punt) {
-                for (Jugador j : jugadores) {
-                    if(j.getId() == t.getIdJugador()) {
-                        System.out.println("Jugador destacado: " + j.getNombreCompleto() + "|" + " Puntos: " + t.getPuntosXpartido());
-                    }
+    double[] puntos = vista.pedirPuntosDestacados();  
+    double puntosOfensivos = puntos[0]; 
+    double puntosDefensivos = puntos[1];  
+    
+    int jugadoresEncontrados = 0;  
+
+    for (Temporada t : temporadas) {
+        if (t.getPuntosXpartido() >= puntosOfensivos || t.getRebotesXpartido() >= puntosDefensivos) {
+            for (Jugador j : jugadores) {
+                if (j.getId() == t.getIdJugador()) {
+                    System.out.println("Jugador destacado: " + j.getNombreCompleto() + "| Puntos: " + t.getPuntosXpartido() + "| Rebotes: " + t.getRebotesXpartido());
+                    jugadoresEncontrados++; 
                 }
             }
         }
     }
-    
-    public void calcPlantilla() {
-        double total = 0;
-        
-        for (Jugador j : jugadores) {
-            for (Temporada t : temporadas) {
-                if (t.getIdJugador() == j.getId()) {
-                    double valor = (t.getPuntosXpartido() * 12 + t.getRebotesXpartido() * 4) + (j.getAltura() * 10) + (j.getPeso() * 0.3) - (j.getEdad() * 1.5); //ESTOS MULTIPLICADORES LOS PONEMOS PARA DAR MAS O MENOS PESO A CIERTAS CARACTERISTICAS DEL JUGADOR AL CALCULAR EL VALOR TOTAL.
-                    total += valor;
-                    
-                    System.out.println("Jugador: " + j.getNombreCompleto() + "|" + " Valor: " + valor);
-                    break; //TUVIMOS QUE USARLO PARA SALIR AL ENCONTRAR UNA TEMPORADA PARA EL JUGADOR.
-                }
+
+    if (jugadoresEncontrados == 0) {
+        System.out.println("No se encontraron jugadores destacados...");
+    }
+}
+        public void mostrarMejoresJugadoresPorPosicion() {
+    Jugador mejorBase = null;
+    Jugador mejorEscolta = null;
+    Jugador mejorAlero = null;
+    Jugador mejorAlaPivot = null;
+    Jugador mejorPivot = null;
+
+    double maxBase = -1, maxEscolta = -1, maxAlero = -1, maxAlaPivot = -1, maxPivot = -1;
+
+    for (Jugador j : jugadores) {
+        if (j instanceof Base) {
+            Base b = (Base) j;
+            double promedio = (b.getVision() + b.getPases() + b.getManejoPelota() + b.getVelocidad()) / 4.0;
+            if (promedio > maxBase) {
+                maxBase = promedio;
+                mejorBase = b;
+            }
+        } else if (j instanceof Escolta) {
+            Escolta e = (Escolta) j;
+            double promedio = (e.getTiros() + e.getManejoPelota() + e.getDefensa()) / 3.0;
+            if (promedio > maxEscolta) {
+                maxEscolta = promedio;
+                mejorEscolta = e;
+            }
+        } else if (j instanceof Alero) {
+            Alero a = (Alero) j;
+            double promedio = (a.getVersatilidad() + a.getOfensivas() + a.getDefensas() + a.getRebote()) / 4.0;
+            if (promedio > maxAlero) {
+                maxAlero = promedio;
+                mejorAlero = a;
+            }
+        } else if (j instanceof AlaPivot) {
+            AlaPivot ap = (AlaPivot) j;
+            double promedio = (ap.getTamañoFuerza() + ap.getRebote() + ap.getBloqueo() + ap.getDefensa()) / 4.0;
+            if (promedio > maxAlaPivot) {
+                maxAlaPivot = promedio;
+                mejorAlaPivot = ap;
+            }
+        } else if (j instanceof Pivot) {
+            Pivot p = (Pivot) j;
+            double promedio = (p.getTamañoFuerza() + p.getRebote() + p.getBloqueo() + p.getDefensa()) / 4.0;
+            if (promedio > maxPivot) {
+                maxPivot = promedio;
+                mejorPivot = p;
             }
         }
-        System.out.println("Valor total de la plantilla: " + total);
+    }
+
+    System.out.println("   Mejor jugador por posicion    ");
+    if (mejorBase != null) System.out.println("Base: " + mejorBase);
+    if (mejorEscolta != null) System.out.println("Escolta: " + mejorEscolta);
+    if (mejorAlero != null) System.out.println("Alero: " + mejorAlero);
+    if (mejorAlaPivot != null) System.out.println("Ala-Pivot: " + mejorAlaPivot);
+    if (mejorPivot != null) System.out.println("Pivot: " + mejorPivot);
+}
+    
+    public void calcPlantilla() {
+    double total = 0;
+
+    for (Jugador j : jugadores) {
+        for (Temporada t : temporadas) {
+            if (t.getIdJugador() == j.getId()) {
+                double rendimiento = (t.getPuntosXpartido() * 100000) + (t.getRebotesXpartido() * 30000);
+                double fisico = (j.getAltura() * 100000) + (j.getPeso() * 5000);
+                double edadFactor = (35 - j.getEdad()) * 50000;
+
+                double valor = rendimiento + fisico + edadFactor;
+                total += valor;
+
+                System.out.printf("Jugador: %s | Valor estimado: $%,.2f USD%n", j.getNombreCompleto(), valor);
+                break;
+            }
+        }
+    }
+
+    System.out.printf("Valor total de la plantilla: $%,.2f USD%n", total);
 }
     
     public void ejMenu() {
@@ -225,7 +319,8 @@ public void registrarJugador() {
                     informeJugadorDetall();
                 }
                 case 7 -> {
-                    jugadoresDest();
+                    mostrarMejoresJugadoresPorPosicion();
+                    break;
                 }
                 case 8 -> {
                     calcPlantilla();
