@@ -1,16 +1,9 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package vista;
 
 import java.util.Scanner;
 import modelos.Jugador;
 
-/**
- *
- * @author lichi
- */
+
 public class Vista {
     private Scanner sc = new Scanner(System.in);
     
@@ -42,13 +35,13 @@ public class Vista {
         jugador[3] = sc.nextLine();
         System.out.println("Peso en kg: ");
         jugador[4] = sc.nextLine();
-        System.out.println("Rol destacado... OFENSIVO o DEFENSIVO: ");
+        System.out.println("Rol destacado: ");
         jugador[5] = sc.nextLine();
         System.out.println("Tipo de jugador (Base, Escolta, Alero, Ala Pivot o Pivot): ");
         jugador[6] = sc.nextLine();
         
         if (jugador[6].equalsIgnoreCase("Base")) {
-            System.out.println("Visión: ");
+            System.out.println("Vision: ");
             jugador[7] = sc.nextLine(); 
             System.out.println("Pases: ");
             jugador[8] = sc.nextLine(); 
@@ -73,7 +66,7 @@ public class Vista {
             System.out.println("Defensa: ");
             jugador[9] = sc.nextLine(); 
         } else if (jugador[6].equalsIgnoreCase("Ala Pivot")) {
-            System.out.println("Tamaño/Fuerza: ");
+            System.out.println("Fuerza: ");
             jugador[7] = sc.nextLine(); 
             System.out.println("Rebote: ");
             jugador[8] = sc.nextLine(); 
@@ -82,7 +75,7 @@ public class Vista {
             System.out.println("Defensa: ");
             jugador[10] = sc.nextLine(); 
         } else if (jugador[6].equalsIgnoreCase("Pivot")) {
-            System.out.println("Tamaño/Fuerza: ");
+            System.out.println("Fuerza: ");
             jugador[7] = sc.nextLine(); 
             System.out.println("Rebote: ");
             jugador[8] = sc.nextLine(); 
@@ -97,7 +90,7 @@ public class Vista {
     public String[] pedirTemporada() {
         String[] temporada = new String[6];
         
-        System.out.println("Año: ");
+        System.out.println("Temporada anual: ");
         temporada[0] = sc.nextLine();
         System.out.println("Equipo: ");
         temporada[1] = sc.nextLine();
@@ -133,7 +126,19 @@ public class Vista {
     }
     
     public double pedirPuntosDeseados() {
-        System.out.println("Ingrese los puntos necesarios para un buen rendimiento: ");
+        System.out.println("Ingrese cantidad de puntos minimo anotados por partido: ");
         return Double.parseDouble(sc.nextLine());
+    }
+    
+    public double[] pedirPuntosDestacados() {
+    double[] puntos = new double[2];
+
+    System.out.println("Ingrese los puntos necesarios para destacar en ataque: ");
+    puntos[0] = Double.parseDouble(sc.nextLine());
+
+    System.out.println("Ingrese los puntos necesarios para destacar en defensa: ");
+    puntos[1] = Double.parseDouble(sc.nextLine());
+
+    return puntos;
     }
 }
